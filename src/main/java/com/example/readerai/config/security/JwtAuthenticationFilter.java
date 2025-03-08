@@ -1,4 +1,4 @@
-package com.example.readerai.config;
+package com.example.readerai.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
