@@ -9,11 +9,18 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class ReaderaiApplication {
 
-	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.load();
-		System.setProperty("SUPABASE_JWT_SECRET", dotenv.get("SUPABASE_JWT_SECRET"));
+    public static void main(String[] args) {
+        setEnv();
+        SpringApplication.run(ReaderaiApplication.class, args);
+    }
 
-		SpringApplication.run(ReaderaiApplication.class, args);
-	}
-
+    private static void setEnv() {
+        Dotenv dotenv = Dotenv.load();
+        System.setProperty("SUPABASE_JWT_SECRET", dotenv.get("SUPABASE_JWT_SECRET"));
+        System.setProperty("MINIO_ENDPOINT", dotenv.get("MINIO_ENDPOINT"));
+        System.setProperty("MINIO_ACCESS_KEY", dotenv.get("MINIO_ACCESS_KEY"));
+        System.setProperty("MINIO_SECRET_KEY", dotenv.get("MINIO_SECRET_KEY"));
+        System.setProperty("MINIO_BUCKET_NAME", dotenv.get("MINIO_BUCKET_NAME"));
+        System.setProperty("POSTGRES_URL", dotenv.get("POSTGRES_URL"));
+    }
 }
