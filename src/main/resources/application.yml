@@ -9,6 +9,7 @@ minio:
   bucketName: ${MINIO_BUCKET_NAME}
 
 server:
+  address: 0.0.0.0
   port: 8080
 
 spring:
@@ -30,4 +31,4 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        web: DEBUG
