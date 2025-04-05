@@ -39,7 +39,7 @@ class Progress {
     currentPage: Long
     startDate: Date
     endDate: Date
-    progress: ReadingStatus
+    status: ReadingStatus
 }
 
 class ReadingSession {
@@ -61,7 +61,7 @@ enum CompleteStatus {
 class Test {
     id: Long
     progressId: Long **<<FK>>**
-    numPages: Long
+    pagesPerQuestion: Integer
     startPage: Integer
     endPage: Integer
     completed: CompleteStatus
