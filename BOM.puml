@@ -1,0 +1,99 @@
+@startuml BOM
+
+class Book {
+    id: Long
+    title: String
+    author: String
+    userId: String
+    filePath: String
+    fileName: String
+    originalFileName: String
+    fileSize: Long
+    fileType: String
+}
+
+class Participant {
+    id: Long
+    supId: Long | null
+    name: String
+    userId: String
+}
+
+class Access {
+    id: Long
+    participantId: Long **<<FK>>**
+    bookId: Long **<<FK>>**
+}
+
+enum ReadingStatus {
+    NOT_STARTED
+    COMPLETED
+    IN_PROGRESS
+}
+
+class Progress {
+    id: Long
+    participantId: Long **<<FK>>**
+    bookId: Long **<<FK>>**
+    readPages: Long
+    currentPage: Long
+    startDate: Date
+    endDate: Date
+    progress: ReadingStatus
+}
+
+class ReadingSession {
+    id: Long
+    progressId: Long **<<FK>>**
+    startTime: Date
+    endTime: Date
+    startPage: Integer
+    endPage: Integer
+    time: Long
+}
+
+enum CompleteStatus {
+    NOT_STARTED
+    COMPLETED
+    IN_PROGRESS
+}
+
+class Test {
+    id: Long
+    progressId: Long **<<FK>>**
+    numPages: Long
+    startPage: Integer
+    endPage: Integer
+    completed: CompleteStatus
+    dueTo: Date
+    passedDate: Date
+    grade: Integer
+    correct_answers: Integer
+}
+
+class Question {
+    id: Long
+    testId: Long **<<FK>>**
+    question: String
+    quote: String
+}
+
+class Answer {
+    id: Long
+    questionId: Long **<<FK>>**
+    answer: String
+    correct: boolean
+}
+
+Access |o--|| Book
+Access |o--|| Participant
+
+Progress |o--|| Book
+Progress |o--|| Participant
+Progress ||--o{ ReadingSession
+Progress ||--o{ Test
+
+Test ||--o{ Question
+Answer }o--|| Question
+
+@enduml
