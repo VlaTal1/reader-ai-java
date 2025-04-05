@@ -1,5 +1,6 @@
 package com.example.readerai.config;
 
+import com.example.readerai.exception.ErrorResponse;
 import com.example.readerai.exception.ResourceNotFoundException;
 import io.minio.errors.MinioException;
 import org.springframework.http.HttpStatus;
@@ -34,30 +35,3 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
-class ErrorResponse {
-    private int status;
-    private String message;
-
-    public ErrorResponse(int status, String message) {
-        this.status = status;
-        this.message = message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-}
-
