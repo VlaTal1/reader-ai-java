@@ -49,8 +49,8 @@ public class BookService {
     @Transactional
     public BookDTO uploadBook(String title, String author, MultipartFile file) throws IOException, MinioException {
         String contentType = file.getContentType();
-        if (contentType == null || !contentType.equals("application/epub+zip")) {
-            throw new IllegalArgumentException("Only EPUB files are allowed");
+        if (contentType == null || (!contentType.equals("application/epub+zip") && !contentType.equals("application/pdf"))) {
+            throw new IllegalArgumentException("Only EPUB and PDF files are allowed");
         }
 
         FileInfo fileInfo = minioService.uploadFile(file);
