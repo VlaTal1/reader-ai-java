@@ -1,3 +1,17 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changeset/create-table-book.yaml
+  - include:
+      file: db/changelog/changeset/create-table-participant.yaml
+  - include:
+      file: db/changelog/changeset/create-table-access.yaml
+  - include:
+      file: db/changelog/changeset/create-table-progress.yaml
+  - include:
+      file: db/changelog/changeset/create-table-reading-session.yaml
+  - include:
+      file: db/changelog/changeset/create-table-test.yaml
+  - include:
+      file: db/changelog/changeset/create-table-question.yaml
+  - include:
+      file: db/changelog/changeset/create-table-answer.yaml

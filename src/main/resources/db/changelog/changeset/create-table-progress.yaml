@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-sequence-progress
+      author: VlaTal
+      changes:
+        - createSequence:
+            sequenceName: PROGRESS_SEQ_ID
+      rollback:
+        - dropSequence:
+            sequenceName: PROGRESS_SEQ_ID
+  - changeSet:
+      id: create-table-progress
+      author: VlaTal
+      changes:
+        - createTable:
+            tableName: PROGRESS
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  defaultValueSequenceNext: PROGRESS_SEQ_ID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: PARTICIPANT_ID
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: FK_PROGRESS_PARTICIPANT
+                    references: PARTICIPANT(ID)
+                    nullable: false
+              - column:
+                  name: BOOK_ID
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: FK_PROGRESS_BOOK
+                    references: BOOK(ID)
+                    nullable: false
+              - column:
+                  name: READ_PAGES
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CURRENT_PAGE
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: START_DATE
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: END_DATE
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: STATUS
+                  type: VARCHAR
+                  constraints:
+                    nullable: FALSE
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP
+              - column:
+                  name: UPDATED_AT
+                  type: TIMESTAMP
+      rollback:
+        - dropTable:
+            tableName: PROGRESS

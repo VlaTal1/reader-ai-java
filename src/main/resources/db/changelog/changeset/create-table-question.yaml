@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-sequence-question
+      author: VlaTal
+      changes:
+        - createSequence:
+            sequenceName: QUESTION_SEQ_ID
+      rollback:
+        - dropSequence:
+            sequenceName: QUESTION_SEQ_ID
+  - changeSet:
+      id: create-table-question
+      author: VlaTal
+      changes:
+        - createTable:
+            tableName: QUESTION
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  defaultValueSequenceNext: QUESTION_SEQ_ID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: TEST_ID
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: FK_QUESTION_TEST
+                    references: TEST(ID)
+                    nullable: false
+              - column:
+                  name: QUESTION
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: QUOTE
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP
+              - column:
+                  name: UPDATED_AT
+                  type: TIMESTAMP
+      rollback:
+        - dropTable:
+            tableName: QUESTION

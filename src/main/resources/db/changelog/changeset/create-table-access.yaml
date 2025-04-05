@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-sequence-access
+      author: VlaTal
+      changes:
+        - createSequence:
+            sequenceName: ACCESS_SEQ_ID
+      rollback:
+        - dropSequence:
+            sequenceName: ACCESS_SEQ_ID
+  - changeSet:
+      id: create-table-access
+      author: VlaTal
+      changes:
+        - createTable:
+            tableName: ACCESS
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  defaultValueSequenceNext: ACCESS_SEQ_ID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: PARTICIPANT_ID
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: FK_ACCESS_PARTICIPANT
+                    references: PARTICIPANT(ID)
+                    nullable: false
+              - column:
+                  name: BOOK_ID
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: FK_ACCESS_BOOK
+                    references: BOOK(ID)
+                    nullable: false
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP
+              - column:
+                  name: UPDATED_AT
+                  type: TIMESTAMP
+      rollback:
+        - dropTable:
+            tableName: ACCESS
