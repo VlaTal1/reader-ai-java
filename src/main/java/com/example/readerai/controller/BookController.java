@@ -1,6 +1,8 @@
 package com.example.readerai.controller;
 
 import com.example.readerai.dto.BookDTO;
+import com.example.readerai.dto.BookWithDetails;
+import com.example.readerai.exception.NotFoundException;
 import com.example.readerai.service.BookService;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,8 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
-        BookDTO book = bookService.getBookById(id);
+    public ResponseEntity<BookWithDetails> getBookById(@PathVariable Long id) throws NotFoundException {
+        BookWithDetails book = bookService.getBookWithDetails(id);
         return ResponseEntity.ok(book);
     }
 
@@ -45,7 +47,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}/download")
-    public ResponseEntity<InputStreamResource> downloadBook(@PathVariable Long id) throws MinioException {
+    public ResponseEntity<InputStreamResource> downloadBook(@PathVariable Long id) throws MinioException, NotFoundException {
         BookDTO book = bookService.getBookById(id);
         InputStream content = bookService.getBookContent(id);
 

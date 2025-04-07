@@ -1,6 +1,7 @@
 package com.example.readerai.converter;
 
 import com.example.readerai.dto.BookDTO;
+import com.example.readerai.dto.BookWithDetails;
 import com.example.readerai.entity.Book;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,22 @@ public class BookConverter {
 
     public BookDTO toDTO(Book entry) {
         return BookDTO.builder()
+                .id(entry.getId())
+                .title(entry.getTitle())
+                .author(entry.getAuthor())
+                .userId(entry.getUserId())
+                .filePath(entry.getFilePath())
+                .fileName(entry.getFileName())
+                .originalFileName(entry.getOriginalFileName())
+                .fileSize(entry.getFileSize())
+                .fileType(entry.getFileType())
+                .createdAt(entry.getCreatedAt())
+                .updatedAt(entry.getUpdatedAt())
+                .build();
+    }
+
+    public BookWithDetails fromDTOtoWithDetails(BookDTO entry) {
+        return BookWithDetails.builder()
                 .id(entry.getId())
                 .title(entry.getTitle())
                 .author(entry.getAuthor())

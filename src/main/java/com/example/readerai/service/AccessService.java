@@ -12,6 +12,9 @@ import com.example.readerai.repository.AccessRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AccessService {
@@ -43,5 +46,12 @@ public class AccessService {
         progressService.createIfNotExists(bookId, participantId);
 
         return accessConverter.toDTO(access);
+    }
+
+    public List<AccessDTO> getAccessesByBookId(Long bookId) {
+        List<Access> accesses = accessRepository.findByBookId(bookId);
+        return accesses.stream()
+                .map(accessConverter::toDTO)
+                .collect(Collectors.toList());
     }
 }

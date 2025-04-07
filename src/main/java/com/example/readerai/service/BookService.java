@@ -1,9 +1,13 @@
 package com.example.readerai.service;
 
 import com.example.readerai.converter.BookConverter;
+import com.example.readerai.dto.AccessDTO;
 import com.example.readerai.dto.BookDTO;
+import com.example.readerai.dto.BookWithDetails;
 import com.example.readerai.dto.FileInfo;
 import com.example.readerai.entity.Book;
+import com.example.readerai.exception.NotFoundException;
+import com.example.readerai.exception.PermissionDeniedException;
 import com.example.readerai.exception.ResourceNotFoundException;
 import com.example.readerai.repository.BookRepository;
 import io.minio.errors.MinioException;
@@ -16,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,18 +37,32 @@ public class BookService {
 
     private final BookConverter bookConverter;
 
+    private final AccessService accessService;
+
     public List<BookDTO> getAllBooks() {
-        // TODO validate authority
+        // TODO validate authority (find by userId too)
         return bookRepository.findAll().stream()
                 .map(bookConverter::toDTO)
                 .collect(Collectors.toList());
     }
 
     public BookDTO getBookById(Long id) {
-        // TODO validate authority
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException("Book not found with id: " + id));
+        if (!Objects.equals(book.getUserId(), userService.getUserId())) {
+            throw new PermissionDeniedException("You do not have permission to access this book");
+        }
         return bookConverter.toDTO(book);
+    }
+
+    public BookWithDetails getBookWithDetails(Long bookId) {
+        BookDTO book = getBookById(bookId);
+        BookWithDetails bookWithDetails = bookConverter.fromDTOtoWithDetails(book);
+
+        List<AccessDTO> accesses = accessService.getAccessesByBookId(bookId);
+        bookWithDetails.setAccesses(accesses);
+
+        return bookWithDetails;
     }
 
     @Transactional
