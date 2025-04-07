@@ -30,6 +30,12 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    @GetMapping("/participant/{participantId}")
+    public ResponseEntity<List<BookDTO>> getAllBooksByParticipantId(@PathVariable Long participantId) {
+        List<BookDTO> books = bookService.getAllBooksByParticipantId(participantId);
+        return ResponseEntity.ok(books);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookWithDetails> getBookById(@PathVariable Long id) throws NotFoundException {
         BookWithDetails book = bookService.getBookWithDetails(id);

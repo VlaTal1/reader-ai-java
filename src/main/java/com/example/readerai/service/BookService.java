@@ -45,10 +45,14 @@ public class BookService {
     private final AccessConverter accessConverter;
 
     public List<BookDTO> getAllBooks() {
-        // TODO validate authority (find by userId too)
-        return bookRepository.findAll().stream()
+        return bookRepository.findByUserId(userService.getUserId()).stream()
                 .map(bookConverter::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<BookDTO> getAllBooksByParticipantId(Long participantId) {
+        List<Access> accesses = accessRepository.findByParticipant_Id(participantId);
+        return accesses.stream().map((access -> bookConverter.toDTO(access.getBook()))).toList();
     }
 
     public BookDTO getBookById(Long id) {
