@@ -23,8 +23,8 @@ public class ParticipantService {
 
     public ParticipantDTO save(ParticipantDTO participantDTO) {
         Participant participant = participantConverter.fromDTO(participantDTO);
-        participant = participantRepository.save(participant);
         participant.setUserId(userService.getUserId());
+        participant = participantRepository.save(participant);
 
         return participantConverter.toDTO(participant);
     }
