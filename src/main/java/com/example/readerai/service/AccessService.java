@@ -47,11 +47,4 @@ public class AccessService {
 
         return accessConverter.toDTO(access);
     }
-
-    public List<AccessDTO> getAccessesByBookId(Long bookId) {
-        List<Access> accesses = accessRepository.findByBookId(bookId);
-        return accesses.stream()
-                .map(accessConverter::toDTO)
-                .collect(Collectors.toList());
-    }
 }

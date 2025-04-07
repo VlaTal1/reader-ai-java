@@ -1,14 +1,17 @@
 package com.example.readerai.service;
 
+import com.example.readerai.converter.AccessConverter;
 import com.example.readerai.converter.BookConverter;
 import com.example.readerai.dto.AccessDTO;
 import com.example.readerai.dto.BookDTO;
 import com.example.readerai.dto.BookWithDetails;
 import com.example.readerai.dto.FileInfo;
+import com.example.readerai.entity.Access;
 import com.example.readerai.entity.Book;
 import com.example.readerai.exception.NotFoundException;
 import com.example.readerai.exception.PermissionDeniedException;
 import com.example.readerai.exception.ResourceNotFoundException;
+import com.example.readerai.repository.AccessRepository;
 import com.example.readerai.repository.BookRepository;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +40,9 @@ public class BookService {
 
     private final BookConverter bookConverter;
 
-    private final AccessService accessService;
+    private final AccessRepository accessRepository;
+
+    private final AccessConverter accessConverter;
 
     public List<BookDTO> getAllBooks() {
         // TODO validate authority (find by userId too)
@@ -59,8 +64,12 @@ public class BookService {
         BookDTO book = getBookById(bookId);
         BookWithDetails bookWithDetails = bookConverter.fromDTOtoWithDetails(book);
 
-        List<AccessDTO> accesses = accessService.getAccessesByBookId(bookId);
-        bookWithDetails.setAccesses(accesses);
+
+        List<Access> accesses = accessRepository.findByBookId(bookId);
+        List<AccessDTO> accessDTOS = accesses.stream()
+                .map(accessConverter::toDTO)
+                .toList();
+        bookWithDetails.setAccesses(accessDTOS);
 
         return bookWithDetails;
     }
