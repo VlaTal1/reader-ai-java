@@ -34,10 +34,15 @@ public class AccessService {
     private final ProgressService progressService;
 
     public AccessDTO grantAccess(Long bookId, Long participantId) throws NotFoundException {
+        Access access = accessRepository.findByBook_IdAndParticipant_Id(bookId, participantId);
+        if (access != null) {
+            return accessConverter.toDTO(access);
+        }
+
         ParticipantDTO participant = participantService.getById(participantId);
         BookDTO book = bookService.getBookById(bookId);
 
-        Access access = Access.builder()
+        access = Access.builder()
                 .participant(participantConverter.fromDTO(participant))
                 .book(bookConverter.fromDTO(book))
                 .build();
