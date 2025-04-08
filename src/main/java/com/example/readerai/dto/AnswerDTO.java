@@ -15,8 +15,6 @@ public class AnswerDTO extends AuditDTO {
 
     private Long id;
 
-    private QuestionDTO question;
-
     private String answer;
 
     private Boolean correct;

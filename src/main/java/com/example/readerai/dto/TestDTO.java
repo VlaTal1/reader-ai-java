@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,4 +35,6 @@ public class TestDTO extends AuditDTO {
     private Integer grade;
 
     private Integer correctAnswers;
+
+    private List<QuestionDTO> questions;
 }

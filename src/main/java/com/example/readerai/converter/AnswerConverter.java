@@ -9,37 +9,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AnswerConverter {
 
-    private final QuestionConverter questionConverter;
-
     public Answer fromDTO(AnswerDTO entry) {
-        Answer answer = Answer.builder()
+        return Answer.builder()
                 .id(entry.getId())
                 .answer(entry.getAnswer())
                 .correct(entry.getCorrect())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();
-
-        if (entry.getQuestion() != null) {
-            answer.setQuestion(questionConverter.fromDTO(entry.getQuestion()));
-        }
-
-        return answer;
     }
 
     public AnswerDTO toDTO(Answer entry) {
-        AnswerDTO answerDTO = AnswerDTO.builder()
+        return AnswerDTO.builder()
                 .id(entry.getId())
                 .answer(entry.getAnswer())
                 .correct(entry.getCorrect())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();
-
-        if (entry.getQuestion() != null) {
-            answerDTO.setQuestion(questionConverter.toDTO(entry.getQuestion()));
-        }
-
-        return answerDTO;
     }
 }

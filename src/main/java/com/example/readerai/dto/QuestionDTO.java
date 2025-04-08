@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -15,9 +17,9 @@ public class QuestionDTO extends AuditDTO {
 
     private Long id;
 
-    private TestDTO test;
-
     private String question;
 
     private String quote;
+
+    private List<AnswerDTO> answers;
 }

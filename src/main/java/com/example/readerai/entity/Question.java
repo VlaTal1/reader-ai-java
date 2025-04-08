@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Table(name = "QUESTION")
 @Getter
@@ -21,13 +23,13 @@ public class Question extends Audit {
     @SequenceGenerator(name = "QUESTION_SEQ_ID", sequenceName = "QUESTION_SEQ_ID", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TEST_ID", nullable = false, referencedColumnName = "ID", foreignKey = @ForeignKey(name = "FK_QUESTION_TEST"))
-    private Test test;
-
     @Column(name = "QUESTION", nullable = false, columnDefinition = "TEXT")
     private String question;
 
     @Column(name = "QUOTE", nullable = false, columnDefinition = "TEXT")
     private String quote;
+
+    @OneToMany
+    @JoinColumn(name = "QUESTION_ID", referencedColumnName = "ID")
+    private List<Answer> answers;
 }

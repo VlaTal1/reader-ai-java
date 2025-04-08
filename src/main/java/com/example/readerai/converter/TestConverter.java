@@ -5,11 +5,15 @@ import com.example.readerai.entity.Test;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class TestConverter {
 
     private final ProgressConverter progressConverter;
+
+    private final QuestionConverter questionConverter;
 
     public Test fromDTO(TestDTO entry) {
         Test test = Test.builder()
@@ -28,6 +32,12 @@ public class TestConverter {
 
         if (entry.getProgress() != null) {
             test.setProgress(progressConverter.fromDTO(entry.getProgress()));
+        }
+
+        if (entry.getQuestions() != null) {
+            test.setQuestions(entry.getQuestions().stream()
+                    .map(questionConverter::fromDTO)
+                    .collect(Collectors.toList()));
         }
 
         return test;
@@ -50,6 +60,12 @@ public class TestConverter {
 
         if (entry.getProgress() != null) {
             testDTO.setProgress(progressConverter.toDTO(entry.getProgress()));
+        }
+
+        if (entry.getQuestions() != null) {
+            testDTO.setQuestions(entry.getQuestions().stream()
+                    .map(questionConverter::toDTO)
+                    .collect(Collectors.toList()));
         }
 
         return testDTO;

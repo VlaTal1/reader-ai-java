@@ -21,10 +21,6 @@ public class Answer extends Audit {
     @SequenceGenerator(name = "ANSWER_SEQ_ID", sequenceName = "ANSWER_SEQ_ID", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "QUESTION_ID", nullable = false, referencedColumnName = "ID", foreignKey = @ForeignKey(name = "FK_ANSWER_QUESTION"))
-    private Question question;
-
     @Column(name = "ANSWER", nullable = false)
     private String answer;
 

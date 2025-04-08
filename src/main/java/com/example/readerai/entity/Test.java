@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "TEST")
@@ -50,4 +51,8 @@ public class Test extends Audit {
 
     @Column(name = "CORRECT_ANSWERS", nullable = false)
     private Integer correctAnswers;
+
+    @OneToMany
+    @JoinColumn(name = "TEST_ID", referencedColumnName = "ID")
+    private List<Question> questions;
 }
