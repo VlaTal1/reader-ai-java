@@ -29,7 +29,7 @@ databaseChangeLog:
                     references: PROGRESS(ID)
                     nullable: false
               - column:
-                  name: PAGES_PER_QUESTION
+                  name: QUESTIONS_AMOUNT
                   type: INTEGER
                   constraints:
                     nullable: false
@@ -62,12 +62,12 @@ databaseChangeLog:
                   name: GRADE
                   type: INTEGER
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: CORRECT_ANSWERS
                   type: INTEGER
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: CREATED_AT
                   type: TIMESTAMP

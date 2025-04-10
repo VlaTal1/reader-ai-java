@@ -22,5 +22,11 @@ public class ReaderaiApplication {
         System.setProperty("MINIO_SECRET_KEY", dotenv.get("MINIO_SECRET_KEY"));
         System.setProperty("MINIO_BUCKET_NAME", dotenv.get("MINIO_BUCKET_NAME"));
         System.setProperty("POSTGRES_URL", dotenv.get("POSTGRES_URL"));
+
+        System.setProperty("RABBITMQ_HOST", dotenv.get("RABBITMQ_HOST", "localhost"));
+        System.setProperty("RABBITMQ_PORT", dotenv.get("RABBITMQ_PORT", "5672"));
+        System.setProperty("RABBITMQ_USERNAME", dotenv.get("RABBITMQ_USERNAME", "guest"));
+        System.setProperty("RABBITMQ_PASSWORD", dotenv.get("RABBITMQ_PASSWORD", "guest"));
+        System.setProperty("RABBITMQ_VIRTUAL_HOST", dotenv.get("RABBITMQ_VIRTUAL_HOST", "/"));
     }
 }

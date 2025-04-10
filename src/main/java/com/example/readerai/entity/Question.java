@@ -29,7 +29,10 @@ public class Question extends Audit {
     @Column(name = "QUOTE", nullable = false, columnDefinition = "TEXT")
     private String quote;
 
-    @OneToMany
-    @JoinColumn(name = "QUESTION_ID", referencedColumnName = "ID")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
     private List<Answer> answers;
+
+    @ManyToOne
+    @JoinColumn(name = "TEST_ID", referencedColumnName = "ID", nullable = false)
+    private Test test;
 }

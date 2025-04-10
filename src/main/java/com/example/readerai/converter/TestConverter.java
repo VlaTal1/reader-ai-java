@@ -1,5 +1,6 @@
 package com.example.readerai.converter;
 
+import com.example.readerai.dto.CompleteStatus;
 import com.example.readerai.dto.TestDTO;
 import com.example.readerai.entity.Test;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,10 @@ public class TestConverter {
     public Test fromDTO(TestDTO entry) {
         Test test = Test.builder()
                 .id(entry.getId())
-                .pagesPerQuestion(entry.getPagesPerQuestion())
+                .questionsAmount(entry.getQuestionsAmount())
                 .startPage(entry.getStartPage())
                 .endPage(entry.getEndPage())
-                .completed(entry.getCompleted())
+                .completed(entry.getCompleted().toString())
                 .dueTo(entry.getDueTo())
                 .passedDate(entry.getPassedDate())
                 .grade(entry.getGrade())
@@ -46,10 +47,10 @@ public class TestConverter {
     public TestDTO toDTO(Test entry) {
         TestDTO testDTO = TestDTO.builder()
                 .id(entry.getId())
-                .pagesPerQuestion(entry.getPagesPerQuestion())
+                .questionsAmount(entry.getQuestionsAmount())
                 .startPage(entry.getStartPage())
                 .endPage(entry.getEndPage())
-                .completed(entry.getCompleted())
+                .completed(CompleteStatus.valueOf(entry.getCompleted()))
                 .dueTo(entry.getDueTo())
                 .passedDate(entry.getPassedDate())
                 .grade(entry.getGrade())

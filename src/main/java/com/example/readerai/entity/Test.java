@@ -28,8 +28,8 @@ public class Test extends Audit {
     @JoinColumn(name = "PROGRESS_ID", nullable = false, referencedColumnName = "ID", foreignKey = @ForeignKey(name = "FK_TEST_PROGRESS"))
     private Progress progress;
 
-    @Column(name = "PAGES_PER_QUESTION", nullable = false)
-    private Integer pagesPerQuestion;
+    @Column(name = "QUESTIONS_AMOUNT", nullable = false)
+    private Integer questionsAmount;
 
     @Column(name = "START_PAGE", nullable = false)
     private Integer startPage;
@@ -46,13 +46,12 @@ public class Test extends Audit {
     @Column(name = "PASSED_DATE")
     private LocalDateTime passedDate;
 
-    @Column(name = "GRADE", nullable = false)
+    @Column(name = "GRADE")
     private Integer grade;
 
-    @Column(name = "CORRECT_ANSWERS", nullable = false)
+    @Column(name = "CORRECT_ANSWERS")
     private Integer correctAnswers;
 
-    @OneToMany
-    @JoinColumn(name = "TEST_ID", referencedColumnName = "ID")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "test")
     private List<Question> questions;
 }

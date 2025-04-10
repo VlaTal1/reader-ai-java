@@ -20,13 +20,13 @@ public class TestDTO extends AuditDTO {
 
     private ProgressDTO progress;
 
-    private Integer pagesPerQuestion;
+    private Integer questionsAmount;
 
     private Integer startPage;
 
     private Integer endPage;
 
-    private String completed;
+    private CompleteStatus completed;
 
     private LocalDateTime dueTo;
 
