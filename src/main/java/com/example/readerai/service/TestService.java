@@ -135,4 +135,14 @@ public class TestService {
             throw new RuntimeException("Failed to save test generation results", e);
         }
     }
+
+    public List<TestDTO> getTestsByParticipantId(Long participantId) {
+        try {
+            List<Test> tests = testRepository.findAllByProgress_Participant_Id(participantId);
+            return tests.stream().map(testConverter::toDTO).toList();
+        } catch (Exception e) {
+            log.error("Failed to get tests by participant id: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to get tests by participant id", e);
+        }
+    }
 }
