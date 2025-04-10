@@ -1,6 +1,7 @@
 package com.example.readerai.converter;
 
 import com.example.readerai.dto.ProgressDTO;
+import com.example.readerai.dto.ReadingStatus;
 import com.example.readerai.entity.Progress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class ProgressConverter {
                 .currentPage(entry.getCurrentPage())
                 .startDate(entry.getStartDate())
                 .endDate(entry.getEndDate())
-                .status(entry.getStatus())
+                .status(entry.getStatus().toString())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();
@@ -43,7 +44,7 @@ public class ProgressConverter {
                 .currentPage(entry.getCurrentPage())
                 .startDate(entry.getStartDate())
                 .endDate(entry.getEndDate())
-                .status(entry.getStatus())
+                .status(ReadingStatus.valueOf(entry.getStatus()))
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();

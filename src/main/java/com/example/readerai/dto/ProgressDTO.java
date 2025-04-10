@@ -29,5 +29,5 @@ public class ProgressDTO extends AuditDTO {
 
     private LocalDateTime endDate;
 
-    private String status;
+    private ReadingStatus status;
 }
