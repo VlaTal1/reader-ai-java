@@ -23,6 +23,6 @@ public class TestController {
 
     @GetMapping("/participant/{participantId}")
     public ResponseEntity<List<TestDTO>> getTestsByParticipantId(@PathVariable Long participantId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(testService.getTestsByParticipantId(participantId));
+        return ResponseEntity.ok(testService.getTestsByParticipantId(participantId));
     }
 }
