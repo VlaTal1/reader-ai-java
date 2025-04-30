@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TestRepository extends JpaRepository<Test, Long> {
     List<Test> findAllByProgress_Participant_Id(Long participantId);
+    List<Test> findAllByProgress_Participant_UserId(String userId);
 }

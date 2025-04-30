@@ -45,6 +45,8 @@ public class TestService {
 
     private final AnswerRepository answerRepository;
 
+    private final UserService userService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TestDTO createTest(TestDTO testDTO) {
@@ -143,6 +145,16 @@ public class TestService {
         } catch (Exception e) {
             log.error("Failed to get tests by participant id: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to get tests by participant id", e);
+        }
+    }
+
+    public List<TestDTO> getTests() {
+        try {
+            List<Test> tests = testRepository.findAllByProgress_Participant_UserId(userService.getUserId());
+            return tests.stream().map(testConverter::toDTO).toList();
+        } catch (Exception e) {
+            log.error("Failed to get tests: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to get tests", e);
         }
     }
 }
