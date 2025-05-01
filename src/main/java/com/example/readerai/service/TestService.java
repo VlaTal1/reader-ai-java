@@ -157,4 +157,17 @@ public class TestService {
             throw new RuntimeException("Failed to get tests", e);
         }
     }
+
+    public TestDTO getFirstTest(Long participantId) {
+        try {
+            Test test = testRepository.getFirstTestByParticipantId(participantId);
+            if (test == null) {
+                return null;
+            }
+            return testConverter.toDTO(test);
+        } catch (Exception e) {
+            log.error("Failed to get test by participant id: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to get test by participant id", e);
+        }
+    }
 }
