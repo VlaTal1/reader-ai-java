@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-answer-add-selected-field
+      author: VlaTal
+      changes:
+        - addColumn:
+            tableName: ANSWER
+            columns:
+              - column:
+                  name: SELECTED
+                  type: BOOLEAN
+                  constraints:
+                    nullable: true
+      rollback:
+        - dropColumn:
+            tableName: ANSWER
+            columnName: SELECTED

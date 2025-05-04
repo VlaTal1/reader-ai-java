@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/changeset/create-table-question.yaml
   - include:
       file: db/changelog/changeset/create-table-answer.yaml
+  - include:
+      file: db/changelog/changeset/GT-35-update-table-answer-add-selected-field.yaml
