@@ -27,7 +27,7 @@ public class Answer extends Audit {
     @Column(name = "CORRECT", nullable = false)
     private Boolean correct;
 
-    @Column(name = "SELECTED", nullable = false)
+    @Column(name = "SELECTED", nullable = true)
     private Boolean selected;
 
     @ManyToOne
