@@ -27,6 +27,9 @@ public class Answer extends Audit {
     @Column(name = "CORRECT", nullable = false)
     private Boolean correct;
 
+    @Column(name = "SELECTED", nullable = false)
+    private Boolean selected;
+
     @ManyToOne
     @JoinColumn(name = "QUESTION_ID", referencedColumnName = "ID", nullable = false)
     private Question question;

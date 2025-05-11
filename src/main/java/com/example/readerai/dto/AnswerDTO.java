@@ -18,4 +18,6 @@ public class AnswerDTO extends AuditDTO {
     private String answer;
 
     private Boolean correct;
+
+    private Boolean selected;
 }

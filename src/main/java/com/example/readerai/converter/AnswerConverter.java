@@ -14,6 +14,7 @@ public class AnswerConverter {
                 .id(entry.getId())
                 .answer(entry.getAnswer())
                 .correct(entry.getCorrect())
+                .selected(entry.getSelected())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();
@@ -24,6 +25,7 @@ public class AnswerConverter {
                 .id(entry.getId())
                 .answer(entry.getAnswer())
                 .correct(entry.getCorrect())
+                .selected(entry.getSelected())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();

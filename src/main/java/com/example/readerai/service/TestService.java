@@ -3,16 +3,14 @@ package com.example.readerai.service;
 import com.example.readerai.config.RabbitMQConfig;
 import com.example.readerai.converter.QuestionConverter;
 import com.example.readerai.converter.TestConverter;
-import com.example.readerai.dto.CompleteStatus;
-import com.example.readerai.dto.ProgressDTO;
-import com.example.readerai.dto.QuestionDTO;
-import com.example.readerai.dto.TestDTO;
+import com.example.readerai.dto.*;
 import com.example.readerai.dto.rabbit.TestGenerationRequest;
 import com.example.readerai.dto.rabbit.TestGenerationResponse;
 import com.example.readerai.entity.Answer;
 import com.example.readerai.entity.Question;
 import com.example.readerai.entity.Test;
 import com.example.readerai.exception.NotFoundException;
+import com.example.readerai.exception.PermissionDeniedException;
 import com.example.readerai.repository.AnswerRepository;
 import com.example.readerai.repository.QuestionRepository;
 import com.example.readerai.repository.TestRepository;
@@ -23,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -169,5 +169,50 @@ public class TestService {
             log.error("Failed to get test by participant id: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to get test by participant id", e);
         }
+    }
+
+    public TestDTO savePassedTest(TestDTO testDTO) {
+        int correctAnswers = 0;
+
+        Test test = testRepository.findById(testDTO.getId()).orElseThrow(() -> new NotFoundException("Test with id " + testDTO.getId() + " not found"));
+
+        if (!Objects.equals(test.getProgress().getBook().getUserId(), userService.getUserId())) {
+            log.error("User do not have permission to this test");
+            throw new PermissionDeniedException("User do not have permission to this test");
+        }
+        if (Objects.equals(test.getCompleted(), CompleteStatus.COMPLETED.toString())) {
+            log.error("Test with id {} already completed", testDTO.getId());
+            throw new IllegalArgumentException("Test with id " + testDTO.getId() + " already completed");
+        }
+        if (testDTO.getQuestions() == null || testDTO.getQuestions().isEmpty()) {
+            log.error("No question provided for test with id: {}", testDTO.getId());
+            throw new IllegalArgumentException("No question provided for test with id: " + testDTO.getId());
+        }
+
+        for (QuestionDTO questionDTO : testDTO.getQuestions()) {
+            if (questionDTO.getAnswers() == null || questionDTO.getAnswers().isEmpty()) {
+                log.error("No answer provided for question with id: {}", questionDTO.getId());
+                throw new IllegalArgumentException("No answer provided for question with id: " + questionDTO.getId());
+            }
+            for (AnswerDTO answerDTO : questionDTO.getAnswers()) {
+                if (answerDTO.getSelected() == null) {
+                    log.error("Selected field in answer not nullable for save. Answer id: {}", answerDTO.getId());
+                    throw new IllegalArgumentException("Selected field in answer not nullable for save. Answer id: " + answerDTO.getId());
+                }
+                if (answerDTO.getSelected() && answerDTO.getCorrect()) {
+                    correctAnswers += 1;
+                }
+            }
+        }
+
+        float grade = ((float) correctAnswers / testDTO.getQuestions().size()) * 10f;
+
+        testDTO.setCompleted(CompleteStatus.COMPLETED);
+        testDTO.setPassedDate(LocalDateTime.now());
+        testDTO.setGrade(Math.round(grade));
+        testDTO.setCorrectAnswers(correctAnswers);
+
+        Test savedTest = testRepository.save(testConverter.fromDTO(testDTO));
+        return testConverter.toDTO(savedTest);
     }
 }

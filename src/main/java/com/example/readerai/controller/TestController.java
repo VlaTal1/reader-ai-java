@@ -35,4 +35,9 @@ public class TestController {
     public ResponseEntity<TestDTO> getFirstTest(@PathVariable Long participantId) {
         return ResponseEntity.ok(testService.getFirstTest(participantId));
     }
+
+    @PostMapping("/pass")
+    public ResponseEntity<TestDTO> savePassedTest(@RequestBody TestDTO testDTO) {
+        return ResponseEntity.ok(testService.savePassedTest(testDTO));
+    }
 }
