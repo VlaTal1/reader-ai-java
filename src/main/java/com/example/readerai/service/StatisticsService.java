@@ -9,10 +9,7 @@ import com.example.readerai.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,19 +22,14 @@ public class StatisticsService {
     private final UserService userService;
 
     public List<GradeByParticipant> getParticipantsGrade() {
-        // Fetch all tests from repository
         List<Test> allTests = testRepository.findAllByProgress_Participant_UserId(userService.getUserId());
 
-        // Create map to store results by participant ID
         Map<Long, GradeByParticipant> resultMap = new HashMap<>();
 
-        // Process each test
         for (Test test : allTests) {
-            // Get participant
             Participant participant = test.getProgress().getParticipant();
             Long participantId = participant.getId();
 
-            // Get or create GradeByParticipant object
             GradeByParticipant gradeData = resultMap.computeIfAbsent(
                     participantId,
                     id -> GradeByParticipant.builder()
@@ -48,22 +40,21 @@ public class StatisticsService {
                             .build()
             );
 
-            // Increment total tests count
             gradeData.setTotalTests(gradeData.getTotalTests() + 1);
 
-            // If test is completed, update completed count and recalculate average
             if (CompleteStatus.COMPLETED.toString().equals(test.getCompleted())) {
                 int newCompletedCount = gradeData.getCompletedTests() + 1;
                 gradeData.setCompletedTests(newCompletedCount);
 
-                // Update running average
                 float currentTotal = gradeData.getAvgGrade() * (newCompletedCount - 1);
                 float newAverage = (currentTotal + test.getGrade()) / newCompletedCount;
                 gradeData.setAvgGrade(newAverage);
             }
         }
 
-        // Convert map values to list
-        return new ArrayList<>(resultMap.values());
+        List<GradeByParticipant> result = new ArrayList<>(resultMap.values());
+        result.sort(Comparator.comparing(GradeByParticipant::getAvgGrade).reversed());
+
+        return result;
     }
 }
