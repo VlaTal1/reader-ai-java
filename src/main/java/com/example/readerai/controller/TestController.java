@@ -31,6 +31,11 @@ public class TestController {
         return ResponseEntity.ok(testService.getTestsByParticipantId(participantId));
     }
 
+    @GetMapping("/participant/{participantId}/book/{bookId}")
+    public ResponseEntity<List<TestDTO>> getTestsByParticipantIdAndBookId(@PathVariable Long participantId, @PathVariable Long bookId) {
+        return ResponseEntity.ok(testService.getTestsByParticipantIdAndBookId(participantId, bookId));
+    }
+
     @GetMapping("/participant/{participantId}/firstTest")
     public ResponseEntity<TestDTO> getFirstTest(@PathVariable Long participantId) {
         return ResponseEntity.ok(testService.getFirstTest(participantId));

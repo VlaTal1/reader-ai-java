@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface TestRepository extends JpaRepository<Test, Long> {
     List<Test> findAllByProgress_Participant_Id(Long participantId);
+
+    List<Test> findAllByProgress_Participant_IdAndProgress_Book_Id(Long participantId, Long bookId);
     List<Test> findAllByProgress_Participant_UserId(String userId);
 
     @Query(value = """
