@@ -47,6 +47,8 @@ public class TestService {
 
     private final UserService userService;
 
+    private final AccessService accessService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TestDTO createTest(TestDTO testDTO) {
@@ -54,7 +56,14 @@ public class TestService {
             Long bookId = testDTO.getProgress().getBook().getId();
             Long participantId = testDTO.getProgress().getParticipant().getId();
 
-            ProgressDTO progressDTO = progressService.getProgressByBookIdAndParticipantId(bookId, participantId);
+            ProgressDTO progressDTO;
+
+            try {
+                progressDTO = progressService.getProgressByBookIdAndParticipantId(bookId, participantId);
+            } catch (NotFoundException e) {
+                accessService.grantAccess(bookId, participantId);
+                progressDTO = progressService.getProgressByBookIdAndParticipantId(bookId, participantId);
+            }
 
             testDTO.setProgress(progressDTO);
             testDTO.setCompleted(CompleteStatus.NOT_STARTED);
