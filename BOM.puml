@@ -12,34 +12,28 @@ class Book {
     fileType: String
 }
 
-class Participant {
+class Child {
     id: Long
-    supId: Long | null
+    supId: Long
     name: String
     userId: String
 }
 
 class Access {
     id: Long
-    participantId: Long **<<FK>>**
+    childId: Long **<<FK>>**
     bookId: Long **<<FK>>**
-}
-
-enum ReadingStatus {
-    NOT_STARTED
-    COMPLETED
-    IN_PROGRESS
 }
 
 class Progress {
     id: Long
-    participantId: Long **<<FK>>**
+    childId: Long **<<FK>>**
     bookId: Long **<<FK>>**
     readPages: Long
     currentPage: Long
     startDate: Date
     endDate: Date
-    status: ReadingStatus
+    status: String
 }
 
 class ReadingSession {
@@ -52,19 +46,13 @@ class ReadingSession {
     time: Long
 }
 
-enum CompleteStatus {
-    NOT_STARTED
-    COMPLETED
-    IN_PROGRESS
-}
-
 class Test {
     id: Long
     progressId: Long **<<FK>>**
     pagesPerQuestion: Integer
     startPage: Integer
     endPage: Integer
-    completed: CompleteStatus
+    completed: String
     dueTo: Date
     passedDate: Date
     grade: Integer
@@ -82,14 +70,15 @@ class Answer {
     id: Long
     questionId: Long **<<FK>>**
     answer: String
-    correct: boolean
+    correct: Boolean
+    selected: Boolean
 }
 
 Access |o--|| Book
-Access |o--|| Participant
+Access |o--|| Child
 
 Progress |o--|| Book
-Progress |o--|| Participant
+Progress |o--|| Child
 Progress ||--o{ ReadingSession
 Progress ||--o{ Test
 
