@@ -1,6 +1,7 @@
 package com.example.readerai.controller;
 
 import com.example.readerai.dto.statistics.GradeByParticipant;
+import com.example.readerai.dto.statistics.ReadingStatsByDay;
 import com.example.readerai.service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,10 @@ public class StatisticsController {
     @GetMapping("/participants/avgGrade")
     public ResponseEntity<List<GradeByParticipant>> getParticipantsGrade() {
         return ResponseEntity.ok(statisticsService.getParticipantsGrade());
+    }
+
+    @GetMapping("/participants/daily")
+    public ResponseEntity<List<ReadingStatsByDay>> getDailyReadingStatistics() {
+        return ResponseEntity.ok(statisticsService.getReadingStatsByDay());
     }
 }
