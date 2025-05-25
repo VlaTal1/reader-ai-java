@@ -22,7 +22,7 @@ public class ReadingStatsByDay {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DailyReadingStats {
-        private Long totalReadingTimeMinutes;
+        private float totalReadingTimeMinutes;
         private Integer totalPagesRead;
     }
 }
