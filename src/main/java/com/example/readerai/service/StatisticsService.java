@@ -64,42 +64,35 @@ public class StatisticsService {
     }
 
     public List<ReadingStatsByDay> getReadingStatsByDay() {
-        // Получаем ID текущего пользователя
         String userId = userService.getUserId();
 
-        // Получаем всех участников для данного пользователя
         List<Participant> participants = participantRepository.findByUserId(userId);
 
-        // Создаем результирующий список
         List<ReadingStatsByDay> result = new ArrayList<>();
 
         for (Participant participant : participants) {
-            // Для каждого участника создаем объект статистики
             ReadingStatsByDay participantStats = ReadingStatsByDay.builder()
                     .participant(participantConverter.toDTO(participant))
                     .dailyStats(new HashMap<>())
                     .build();
 
-            // Получаем все сессии чтения для участника
             List<ReadingSession> readingSessions = readingSessionRepository.findAllByProgress_Participant_Id(participant.getId());
 
             for (ReadingSession session : readingSessions) {
                 if (session.getStartTime() != null && session.getEndTime() != null) {
-                    // Преобразуем время в дату
                     LocalDate sessionDay = session.getStartTime().toLocalDate();
 
-                    // Вычисляем количество прочитанных страниц
                     final int pagesRead = calculatePagesRead(session);
+                    final float readingTimeMinutes = session.getTime() / (1000f * 60f);
 
-                    // Обновляем дневную статистику
                     participantStats.getDailyStats().compute(sessionDay, (date, stats) -> {
                         if (stats == null) {
                             return ReadingStatsByDay.DailyReadingStats.builder()
-                                    .totalReadingTimeMinutes(session.getTime())
+                                    .totalReadingTimeMinutes(readingTimeMinutes)
                                     .totalPagesRead(pagesRead)
                                     .build();
                         } else {
-                            stats.setTotalReadingTimeMinutes(stats.getTotalReadingTimeMinutes() + session.getTime());
+                            stats.setTotalReadingTimeMinutes(stats.getTotalReadingTimeMinutes() + readingTimeMinutes);
                             stats.setTotalPagesRead(stats.getTotalPagesRead() + pagesRead);
                             return stats;
                         }
