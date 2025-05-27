@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +62,21 @@ public class ProgressService {
         } catch (Exception e) {
             throw new RuntimeException("Error while getting or creating progress", e);
         }
+    }
+
+    public ProgressDTO updateProgress(ProgressDTO progressDTO) {
+        Progress progress = progressRepository.findById(progressDTO.getId()).orElseThrow(
+                () -> new NotFoundException("Progress with id " + progressDTO.getId() + " not found")
+        );
+
+        if (Objects.equals(progress.getStatus(), ReadingStatus.NOT_STARTED.toString())) {
+            progress.setStatus(ReadingStatus.IN_PROGRESS.toString());
+        }
+
+        progress.setReadPages(progressDTO.getReadPages());
+        progress.setCurrentPage(progressDTO.getCurrentPage());
+
+        Progress updatedProgress = progressRepository.save(progress);
+        return progressConverter.toDTO(updatedProgress);
     }
 }
