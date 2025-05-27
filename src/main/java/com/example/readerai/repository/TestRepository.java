@@ -18,9 +18,10 @@ public interface TestRepository extends JpaRepository<Test, Long> {
             JOIN progress p ON t.progress_id = p.id
             WHERE t.completed = 'NOT_STARTED'
             AND p.participant_id = :participantId
+            AND p.book_id = :bookId
             ORDER BY t.end_page
             LIMIT 1
             """,
             nativeQuery = true)
-    Test getFirstTestByParticipantId(@Param("participantId") Long participantId);
+    Test getFirstTestByParticipantIdAndBookId(@Param("participantId") Long participantId, @Param("bookId") Long bookId);
 }

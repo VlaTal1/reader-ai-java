@@ -177,9 +177,9 @@ public class TestService {
         }
     }
 
-    public TestDTO getFirstTest(Long participantId) {
+    public TestDTO getFirstTest(Long participantId, Long bookId) {
         try {
-            Test test = testRepository.getFirstTestByParticipantId(participantId);
+            Test test = testRepository.getFirstTestByParticipantIdAndBookId(participantId, bookId);
             if (test == null) {
                 return null;
             }
