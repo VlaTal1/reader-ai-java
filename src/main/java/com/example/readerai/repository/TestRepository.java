@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TestRepository extends JpaRepository<Test, Long> {
@@ -12,6 +13,15 @@ public interface TestRepository extends JpaRepository<Test, Long> {
 
     List<Test> findAllByProgress_Participant_IdAndProgress_Book_Id(Long participantId, Long bookId);
     List<Test> findAllByProgress_Participant_UserId(String userId);
+
+    @Query("SELECT t FROM Test t " +
+            "WHERE t.progress.participant.id = :participantId " +
+            "AND t.completed = :completed " +
+            "AND YEAR(t.progress.endDate) = :year")
+    List<Test> findAllByProgress_Participant_IdAndCompletedAndYear(
+            @Param("participantId") Long participantId,
+            @Param("completed") String completed,
+            @Param("year") int year);
 
     @Query(value = """
             SELECT t.* FROM test t
@@ -24,4 +34,5 @@ public interface TestRepository extends JpaRepository<Test, Long> {
             """,
             nativeQuery = true)
     Test getFirstTestByParticipantIdAndBookId(@Param("participantId") Long participantId, @Param("bookId") Long bookId);
+
 }

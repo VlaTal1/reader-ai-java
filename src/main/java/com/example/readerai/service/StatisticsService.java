@@ -4,6 +4,7 @@ import com.example.readerai.converter.ParticipantConverter;
 import com.example.readerai.dto.CompleteStatus;
 import com.example.readerai.dto.statistics.GradeByParticipant;
 import com.example.readerai.dto.statistics.ReadingStatsByDay;
+import com.example.readerai.dto.statistics.WeeklyStatsByParticipant;
 import com.example.readerai.entity.Participant;
 import com.example.readerai.entity.ReadingSession;
 import com.example.readerai.entity.Test;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -104,6 +106,116 @@ public class StatisticsService {
         }
 
         return result;
+    }
+
+    public List<WeeklyStatsByParticipant> getWeeklyStats() {
+        String userId = userService.getUserId();
+        List<Participant> participants = participantRepository.findByUserId(userId);
+
+        // Определяем диапазон текущего года
+        int currentYear = LocalDate.now().getYear();
+        LocalDate yearStart = LocalDate.of(currentYear, 1, 1);
+        LocalDate yearEnd = LocalDate.of(currentYear, 12, 31);
+
+        List<WeeklyStatsByParticipant> result = new ArrayList<>();
+
+        for (Participant participant : participants) {
+            WeeklyStatsByParticipant participantStats = WeeklyStatsByParticipant.builder()
+                    .participant(participantConverter.toDTO(participant))
+                    .weeklyStats(new HashMap<>())
+                    .build();
+
+            // Получаем сессии чтения только за текущий год
+            List<ReadingSession> readingSessions = readingSessionRepository
+                    .findAllByProgress_Participant_Id(participant.getId())
+                    .stream()
+                    .filter(session -> session.getStartTime() != null &&
+                            !session.getStartTime().toLocalDate().isBefore(yearStart) &&
+                            !session.getStartTime().toLocalDate().isAfter(yearEnd))
+                    .toList();
+
+            // Получаем тесты только за текущий год
+            List<Test> completedTests = testRepository
+                    .findAllByProgress_Participant_IdAndCompletedAndYear(participant.getId(), CompleteStatus.COMPLETED.toString(), LocalDateTime.now().getYear())
+                    .stream()
+                    .filter(test -> test.getProgress().getEndDate() != null &&
+                            !test.getProgress().getEndDate().toLocalDate().isBefore(yearStart) &&
+                            !test.getProgress().getEndDate().toLocalDate().isAfter(yearEnd))
+                    .toList();
+
+            // Группируем тесты по дням для расчета средней оценки по дням (уже отфильтрованы по текущему году)
+            Map<LocalDate, List<Test>> testsByDay = new HashMap<>();
+            for (Test test : completedTests) {
+                LocalDate testDay = test.getProgress().getEndDate().toLocalDate();
+                testsByDay.computeIfAbsent(testDay, k -> new ArrayList<>()).add(test);
+            }
+
+            // Обрабатываем сессии чтения (уже отфильтрованы по текущему году)
+            for (ReadingSession session : readingSessions) {
+                LocalDate sessionDay = session.getStartTime().toLocalDate();
+                String weekKey = getWeekKey(sessionDay);
+
+                final int pagesRead = calculatePagesRead(session);
+                final float readingTimeMinutes = session.getTime() / (1000f * 60f);
+
+                participantStats.getWeeklyStats().compute(weekKey, (week, stats) -> {
+                    if (stats == null) {
+                        stats = WeeklyStatsByParticipant.WeeklyReadingStats.builder()
+                                .totalReadingTimeMinutes(0f)
+                                .totalPagesRead(0)
+                                .totalRatingSum(0f)
+                                .ratingCount(0)
+                                .build();
+                    }
+
+                    stats.setTotalReadingTimeMinutes(stats.getTotalReadingTimeMinutes() + readingTimeMinutes);
+                    stats.setTotalPagesRead(stats.getTotalPagesRead() + pagesRead);
+
+                    return stats;
+                });
+            }
+
+            // Добавляем оценки по дням к соответствующим неделям (уже отфильтрованы по текущему году)
+            for (Map.Entry<LocalDate, List<Test>> entry : testsByDay.entrySet()) {
+                LocalDate testDay = entry.getKey();
+                String weekKey = getWeekKey(testDay);
+                List<Test> dayTests = entry.getValue();
+
+                if (!dayTests.isEmpty()) {
+                    float dayAverageRating = (float) dayTests.stream()
+                            .mapToDouble(Test::getGrade)
+                            .average()
+                            .orElse(0.0);
+
+                    participantStats.getWeeklyStats().compute(weekKey, (week, stats) -> {
+                        if (stats == null) {
+                            stats = WeeklyStatsByParticipant.WeeklyReadingStats.builder()
+                                    .totalReadingTimeMinutes(0f)
+                                    .totalPagesRead(0)
+                                    .totalRatingSum(0f)
+                                    .ratingCount(0)
+                                    .build();
+                        }
+
+                        stats.setTotalRatingSum(stats.getTotalRatingSum() + dayAverageRating);
+                        stats.setRatingCount(stats.getRatingCount() + 1);
+
+                        return stats;
+                    });
+                }
+            }
+
+            result.add(participantStats);
+        }
+
+        return result;
+    }
+
+    private String getWeekKey(LocalDate date) {
+        java.time.temporal.WeekFields weekFields = java.time.temporal.WeekFields.of(java.util.Locale.getDefault());
+        int weekOfYear = date.get(weekFields.weekOfWeekBasedYear());
+        int year = date.get(weekFields.weekBasedYear());
+        return String.format("%d-W%02d", year, weekOfYear);
     }
 
     private int calculatePagesRead(ReadingSession session) {
