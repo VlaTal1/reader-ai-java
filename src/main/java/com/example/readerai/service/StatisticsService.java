@@ -112,7 +112,6 @@ public class StatisticsService {
         String userId = userService.getUserId();
         List<Participant> participants = participantRepository.findByUserId(userId);
 
-        // Определяем диапазон текущего года
         int currentYear = LocalDate.now().getYear();
         LocalDate yearStart = LocalDate.of(currentYear, 1, 1);
         LocalDate yearEnd = LocalDate.of(currentYear, 12, 31);
@@ -125,7 +124,6 @@ public class StatisticsService {
                     .weeklyStats(new HashMap<>())
                     .build();
 
-            // Получаем сессии чтения только за текущий год
             List<ReadingSession> readingSessions = readingSessionRepository
                     .findAllByProgress_Participant_Id(participant.getId())
                     .stream()
@@ -134,7 +132,6 @@ public class StatisticsService {
                             !session.getStartTime().toLocalDate().isAfter(yearEnd))
                     .toList();
 
-            // Получаем тесты только за текущий год
             List<Test> completedTests = testRepository
                     .findAllByProgress_Participant_IdAndCompletedAndYear(participant.getId(), CompleteStatus.COMPLETED.toString(), LocalDateTime.now().getYear())
                     .stream()
@@ -143,14 +140,12 @@ public class StatisticsService {
                             !test.getProgress().getEndDate().toLocalDate().isAfter(yearEnd))
                     .toList();
 
-            // Группируем тесты по дням для расчета средней оценки по дням (уже отфильтрованы по текущему году)
             Map<LocalDate, List<Test>> testsByDay = new HashMap<>();
             for (Test test : completedTests) {
                 LocalDate testDay = test.getProgress().getEndDate().toLocalDate();
                 testsByDay.computeIfAbsent(testDay, k -> new ArrayList<>()).add(test);
             }
 
-            // Обрабатываем сессии чтения (уже отфильтрованы по текущему году)
             for (ReadingSession session : readingSessions) {
                 LocalDate sessionDay = session.getStartTime().toLocalDate();
                 String weekKey = getWeekKey(sessionDay);
@@ -175,7 +170,6 @@ public class StatisticsService {
                 });
             }
 
-            // Добавляем оценки по дням к соответствующим неделям (уже отфильтрованы по текущему году)
             for (Map.Entry<LocalDate, List<Test>> entry : testsByDay.entrySet()) {
                 LocalDate testDay = entry.getKey();
                 String weekKey = getWeekKey(testDay);
