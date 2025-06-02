@@ -3,7 +3,6 @@ package com.example.readerai.controller;
 import com.example.readerai.dto.ProgressDTO;
 import com.example.readerai.service.ProgressService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
