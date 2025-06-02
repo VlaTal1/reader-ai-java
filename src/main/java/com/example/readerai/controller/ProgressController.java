@@ -3,6 +3,7 @@ package com.example.readerai.controller;
 import com.example.readerai.dto.ProgressDTO;
 import com.example.readerai.service.ProgressService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class ProgressController {
 
     @GetMapping("/participant/{participantId}/book/{bookId}")
     public ResponseEntity<ProgressDTO> getProgress(@PathVariable Long participantId, @PathVariable Long bookId) {
-        return ResponseEntity.ok(progressService.getProgressByBookIdAndParticipantId(participantId, bookId));
+        return ResponseEntity.ok(progressService.getProgressByBookIdAndParticipantId(bookId, participantId));
     }
 
     @PutMapping("/")
